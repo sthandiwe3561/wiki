@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.shortcuts import render,redirect
 from . import util
 
@@ -20,18 +21,14 @@ def search(request):
             content = util.get_entry(value)
 
             if content:
-               return render("encyclopedia/entry_page",{
-                "content":content
-               })
+               return redirect(reverse("entry_page", args=[value]))
             else:
               lower_value = value.lower()
               entries = util.list_entries()
               partial_matches = [entry for entry in entries if lower_value in entry.lower()]
-              return render(request,"encyclopedia/search_page.html", {
+              return render(request,"encyclopedia/search_results.html", {
                   "results": partial_matches, "query":value
               })
-
-       
     else:
         return redirect(reverse("index"))
 
