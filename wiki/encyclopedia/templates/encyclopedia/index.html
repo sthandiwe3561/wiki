@@ -1,16 +1,15 @@
-{% extends "encyclopedia/layout.html" %}
+{% extends "encyclopedia/layout.html" %} {% block title %} Encyclopedia
+{%endblock %} {% block body %}
+<h1>All Pages</h1>
 
-{% block title %}
-    Encyclopedia
-{% endblock %}
-
-{% block body %}
-    <h1>All Pages</h1>
-
-    <ul>
-        {% for entry in entries %}
-            <li>{{ entry }}</li>
-        {% endfor %}
-    </ul>
-
+<ul>
+  {% for entry in entries %}
+  <!--thehref part we are using a function the provides content through a title
+  paremeter so we are using the entries passed here and passing them to
+  the entry_page function passing the to the title
+  paremeter so that when the user press the link the entry name 
+  goes ti the function as a title and the content of thatname is returned-->
+  <li><a href="{% url 'entry_page' title=entry %}">{{ entry }}</a></li>
+  {% endfor %}
+</ul>
 {% endblock %}
