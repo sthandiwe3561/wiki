@@ -11,10 +11,10 @@
   goes ti the function as a title and the content of thatname is returned-->
   <li>
     <a href="{% url 'entry_page' title=entry %}">{{ entry }}</a>
-    <a href="{% url 'edit_entry' title=entry %}" class="btn btn-primary"
-      >Edit</a
-    >
   </li>
+  <button id="button">
+    <a href="{% url 'edit_entry' title=entry %}">Edit</a>
+  </button>
   {% endfor %}
 </ul>
 {% if messages %}
