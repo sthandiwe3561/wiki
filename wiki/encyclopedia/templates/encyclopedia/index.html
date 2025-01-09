@@ -9,7 +9,18 @@
   the entry_page function passing the to the title
   paremeter so that when the user press the link the entry name 
   goes ti the function as a title and the content of thatname is returned-->
-  <li><a href="{% url 'entry_page' title=entry %}">{{ entry }}</a></li>
+  <li>
+    <a href="{% url 'entry_page' title=entry %}">{{ entry }}</a>
+    <a href="{% url 'edit_entry' title=entry %}" class="btn btn-primary"
+      >Edit</a
+    >
+  </li>
   {% endfor %}
 </ul>
-{% endblock %}
+{% if messages %}
+<ul>
+  {% for message in messages %}
+  <li style="color: red">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %} {% endblock %}

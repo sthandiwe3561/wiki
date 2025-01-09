@@ -1,6 +1,8 @@
 from django.urls import reverse
 from django.shortcuts import render,redirect
 from . import util
+from django.contrib import messages
+import markdown
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -31,4 +33,42 @@ def search(request):
               })
     else:
         return redirect(reverse("index"))
+
+def new_page (request):
+    if request.method == "POST":
+        title = request.POST.get("title","").strip()
+        content = request.POST.get("content","").strip()
+        existing_entries = [entry.lower() for entry in util.list_entries()]  # Convert to lowercase for case-insensitive check
+
+        if title.lower() in existing_entries:
+                messages.error(request, f"The entry '{title}' already exists.")
+                return redirect(reverse("new_page"))
+        
+        markdown_content = f"# {title}\n\n{content}"
+
+        util.save_entry(title,markdown_content)
+        return redirect(reverse("index"))
+    else:
+        return render(request,"encyclopedia/new_page.html")
+
+def edit_entry(request,title):
+
+    content = util.get_entry(title)  
+
+    if content is None:
+        messages.error(request, f"Content for '{title}' not available.")
+        return redirect(reverse("index"))
+    
+    if request.method == "POST":
+        updated_content = request.POST.get("content", "").strip()  # ✅ Get new content
+        util.save_entry(title, updated_content)  # ✅ Save changes
+        return redirect(reverse("entry_page", args=[title]))  # ✅ Redirect to the updated page
+
+    return render(request, "encyclopedia/edit_page.html", {
+        "title": title,
+        "content": content  # ✅ Pass the existing content to pre-fill the textarea
+    })
+
+
+        
 

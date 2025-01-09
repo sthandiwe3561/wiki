@@ -1,0 +1,1 @@
+ChatGPT is a chatbot that uses artificial intelligence (AI) to generate human-like responses to user prompts and questions..
