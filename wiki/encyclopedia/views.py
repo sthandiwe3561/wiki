@@ -2,7 +2,8 @@ from django.urls import reverse
 from django.shortcuts import render,redirect
 from . import util
 from django.contrib import messages
-import markdown
+from markdown2 import Markdown
+import random
 
 def index(request):
     return render(request, "encyclopedia/index.html", {
@@ -11,6 +12,13 @@ def index(request):
 def entry_page(request,title):
     #fecthing the content of the entry
     content = util.get_entry(title)
+    if content is None:
+        return render(request, "encyclopedia/error.html", {
+            "message": f"Page '{title}' not found."
+        })
+    
+    markdowner = Markdown()
+    content = markdowner.convert(content)
 
     return render(request,"encyclopedia/entry_page.html", {
         "content":content , "title": title.capitalize()
@@ -60,14 +68,25 @@ def edit_entry(request,title):
         return redirect(reverse("index"))
     
     if request.method == "POST":
-        updated_content = request.POST.get("content", "").strip()  # ✅ Get new content
-        util.save_entry(title, updated_content)  # ✅ Save changes
-        return redirect(reverse("entry_page", args=[title]))  # ✅ Redirect to the updated page
+        updated_content = request.POST.get("content", "").strip()  # Get new content
+        util.save_entry(title, updated_content)  #  Save changes
+        return redirect(reverse("entry_page", args=[title]))  #Redirect to the updated page
 
     return render(request, "encyclopedia/edit_page.html", {
         "title": title,
-        "content": content  # ✅ Pass the existing content to pre-fill the textarea
+        "content": content  # Pass the existing content to pre-fill the textarea
     })
+
+def random_entry(request):
+    """
+    Selects a random encyclopedia entry and redirects to its page.
+    """
+    entries = util.list_entries()  #Get the list of all entries
+    if not entries:  #Handle case where there are no entries
+        return redirect(reverse("index"))  # Redirect to index if no entries exist
+
+    random_title = random.choice(entries)  #Select a random entry
+    return redirect(reverse("entry_page", args=[random_title]))  
 
 
         

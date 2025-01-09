@@ -1,4 +1,10 @@
 {% extends "encyclopedia/layout.html" %} {% block body %}
 <h1>{{title}}</h1>
 <p>{{content}}</p>
-{% endblock %}
+{% if messages %}
+<ul>
+  {% for message in messages %}
+  <li style="color: red">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %} {% endblock %}
